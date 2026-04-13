@@ -1,12 +1,10 @@
-// Available colors for habits
+// 6 fixed colors - randomly assigned, no repeats
 const habitColors = [
-    '#667eea', // Purple (default)
+    '#667eea', // Purple
     '#4caf50', // Green
-    '#ff9800', // Orange  
+    '#ff9800', // Orange
     '#e91e63', // Pink
     '#2196f3', // Blue
-    '#9c27b0', // Deep Purple
-    '#00bcd4', // Cyan
     '#f44336'  // Red
 ];
 
@@ -17,16 +15,33 @@ let chartInstance = null;
 renderHabits();
 initChart();
 
+function getRandomColor() {
+    // Get colors already in use
+    const usedColors = habits.map(h => h.color);
+    // Get available colors
+    const availableColors = habitColors.filter(color => !usedColors.includes(color));
+    
+    // If all colors used (shouldn't happen with 6 max), return first color
+    if (availableColors.length === 0) return habitColors[0];
+    
+    // Return random available color
+    return availableColors[Math.floor(Math.random() * availableColors.length)];
+}
+
 function addHabit() {
+    // Check if at max capacity (6 habits)
+    if (habits.length >= 6) {
+        alert('Maximum 6 habits allowed. Delete one to add another.');
+        return;
+    }
+    
     const nameInput = document.getElementById('habit-name');
     const typeSelect = document.getElementById('habit-goal-type');
     const targetInput = document.getElementById('habit-target');
-    const colorSelect = document.getElementById('habit-color');
     
     const name = nameInput.value.trim();
     const type = typeSelect.value;
     const target = parseInt(targetInput.value);
-    const color = colorSelect ? colorSelect.value : habitColors[0];
     
     if (!name || !target || target < 1) {
         alert('Please fill in all fields');
@@ -38,7 +53,7 @@ function addHabit() {
         name: name,
         type: type,
         target: target,
-        color: color,
+        color: getRandomColor(), // Randomly assigned, no repeats
         current: 0,
         streak: 0,
         lastUpdated: new Date().toDateString(),
@@ -95,7 +110,7 @@ function renderHabits() {
         container.innerHTML = `
             <div class="empty-state">
                 <h2>No habits yet</h2>
-                <p>Add your first habit above to start tracking!</p>
+                <p>Add up to 6 habits to start tracking!</p>
             </div>
         `;
         return;
