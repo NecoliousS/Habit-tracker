@@ -42,9 +42,11 @@ header p {
     margin-bottom: 2rem;
     flex-wrap: wrap;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    align-items: center;
 }
 
-.add-habit input, .add-habit select {
+.add-habit input, 
+.add-habit select {
     padding: 0.75rem;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
@@ -59,6 +61,15 @@ header p {
 #habit-target {
     flex: 0.5;
     min-width: 80px;
+}
+
+.color-select {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    min-width: 100px;
 }
 
 .btn-primary {
@@ -91,12 +102,22 @@ header p {
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     position: relative;
+    border-left: 4px solid #667eea;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.habit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
 .habit-card h3 {
-    color: #333;
     margin-bottom: 0.5rem;
     font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .habit-meta {
@@ -114,9 +135,9 @@ header p {
 }
 
 .progress-fill {
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     height: 100%;
     transition: width 0.3s ease;
+    border-radius: 5px;
 }
 
 .habit-controls {
@@ -129,7 +150,6 @@ header p {
 .habit-count {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #667eea;
 }
 
 .habit-buttons {
@@ -143,16 +163,13 @@ header p {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    transition: transform 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
+    font-size: 1rem;
 }
 
 .btn-small:hover {
     transform: scale(1.05);
-}
-
-.btn-add {
-    background: #4caf50;
-    color: white;
+    opacity: 0.9;
 }
 
 .btn-sub {
@@ -160,15 +177,18 @@ header p {
     color: white;
 }
 
+.btn-add {
+    color: white;
+    transition: background 0.3s;
+}
+
 .streak {
     display: inline-block;
-    background: #ff9800;
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 600;
-    margin-left: 0.5rem;
 }
 
 .delete-btn {
@@ -180,6 +200,7 @@ header p {
     color: #999;
     cursor: pointer;
     font-size: 1.2rem;
+    transition: color 0.2s;
 }
 
 .delete-btn:hover {
@@ -197,6 +218,7 @@ header p {
 .stats-section h2 {
     margin-bottom: 1rem;
     color: #333;
+    text-align: center;
 }
 
 footer {
@@ -212,6 +234,7 @@ footer {
     cursor: pointer;
     opacity: 0.7;
     transition: opacity 0.2s;
+    font-size: 1rem;
 }
 
 .btn-danger:hover {
@@ -228,4 +251,20 @@ footer {
 
 .empty-state h2 {
     margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .add-habit {
+        flex-direction: column;
+    }
+    
+    .add-habit input,
+    .add-habit select {
+        width: 100%;
+    }
+    
+    .habits-grid {
+        grid-template-columns: 1fr;
+    }
 }
