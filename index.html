@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitStack - Track Anything</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>📈 HabitStack</h1>
+            <p>Track anything. Build streaks. Stay consistent.</p>
+        </header>
+
+        <div class="add-habit">
+            <input type="text" id="habit-name" placeholder="What do you want to track? (e.g., LeetCode, Gym, Reading)">
+            <select id="habit-goal-type">
+                <option value="daily">Daily Goal</option>
+                <option value="weekly">Weekly Total</option>
+                <option value="total">Total Count</option>
+            </select>
+            <input type="number" id="habit-target" placeholder="Target (e.g., 5)" min="1">
+            <button onclick="addHabit()" class="btn-primary">Add Habit</button>
+        </div>
+
+        <div id="habits-container" class="habits-grid">
+            <!-- Habits appear here -->
+        </div>
+
+        <div class="stats-section">
+            <h2>Weekly Overview</h2>
+            <canvas id="weeklyChart"></canvas>
+        </div>
+
+        <footer>
+            <button onclick="clearAllData()" class="btn-danger">Reset All Data</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
