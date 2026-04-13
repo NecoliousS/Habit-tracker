@@ -1,4 +1,4 @@
-// 6 fixed colors - randomly assigned, no repeats
+// 6 fixed colors
 const habitColors = [
     '#667eea', // Purple
     '#4caf50', // Green
@@ -11,25 +11,40 @@ const habitColors = [
 let habits = JSON.parse(localStorage.getItem('habits')) || [];
 let chartInstance = null;
 
-// Initialize
+// Initialize - assign colors to old habits that don't have them
+function migrateOldHabits() {
+    let needsUpdate = false;
+    habits.forEach((habit, index) => {
+        if (!habit.color) {
+            habit.color = habitColors[index % habitColors.length];
+            needsUpdate = true;
+        }
+    });
+    if (needsUpdate) {
+        saveHabits();
+    }
+}
+
+// Run migration on load
+migrateOldHabits();
 renderHabits();
 initChart();
 
-function getRandomColor() {
+function getAvailableColor() {
     // Get colors already in use
     const usedColors = habits.map(h => h.color);
-    // Get available colors
-    const availableColors = habitColors.filter(color => !usedColors.includes(color));
-    
-    // If all colors used (shouldn't happen with 6 max), return first color
-    if (availableColors.length === 0) return habitColors[0];
-    
-    // Return random available color
-    return availableColors[Math.floor(Math.random() * availableColors.length)];
+    // Find first unused color
+    for (let color of habitColors) {
+        if (!usedColors.includes(color)) {
+            return color;
+        }
+    }
+    // Fallback (shouldn't happen with 6 max)
+    return habitColors[habits.length % habitColors.length];
 }
 
 function addHabit() {
-    // Check if at max capacity (6 habits)
+    // STRICT CHECK: Block if 6 or more habits
     if (habits.length >= 6) {
         alert('Maximum 6 habits allowed. Delete one to add another.');
         return;
@@ -53,7 +68,7 @@ function addHabit() {
         name: name,
         type: type,
         target: target,
-        color: getRandomColor(), // Randomly assigned, no repeats
+        color: getAvailableColor(), // Get unused color
         current: 0,
         streak: 0,
         lastUpdated: new Date().toDateString(),
@@ -124,21 +139,24 @@ function renderHabits() {
             'total': 'total'
         }[habit.type];
         
+        // Use habit.color or default to blue if somehow missing
+        const color = habit.color || '#667eea';
+        
         return `
-            <div class="habit-card" style="border-left: 4px solid ${habit.color}">
+            <div class="habit-card" style="border-left: 4px solid ${color}">
                 <button class="delete-btn" onclick="deleteHabit(${habit.id})">×</button>
-                <h3 style="color: ${habit.color}">${habit.name} ${habit.streak > 0 ? `<span class="streak" style="background: ${habit.color}">🔥 ${habit.streak}</span>` : ''}</h3>
+                <h3 style="color: ${color}">${habit.name} ${habit.streak > 0 ? `<span class="streak" style="background: ${color}">🔥 ${habit.streak}</span>` : ''}</h3>
                 <p class="habit-meta">Goal: ${habit.target} ${typeLabel}</p>
                 
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${percentage}%; background: ${habit.color}"></div>
+                    <div class="progress-fill" style="width: ${percentage}%; background: ${color}"></div>
                 </div>
                 
                 <div class="habit-controls">
-                    <span class="habit-count" style="color: ${habit.color}">${habit.current}/${habit.target}</span>
+                    <span class="habit-count" style="color: ${color}">${habit.current}/${habit.target}</span>
                     <div class="habit-buttons">
                         <button class="btn-small btn-sub" onclick="updateHabit(${habit.id}, -1)">-</button>
-                        <button class="btn-small btn-add" onclick="updateHabit(${habit.id}, 1)" style="background: ${habit.color}">+</button>
+                        <button class="btn-small btn-add" onclick="updateHabit(${habit.id}, 1)" style="background: ${color}">+</button>
                     </div>
                 </div>
             </div>
@@ -179,8 +197,8 @@ function getChartDatasets() {
     return habits.map(habit => ({
         label: habit.name,
         data: habit.history,
-        backgroundColor: habit.color,
-        borderColor: habit.color,
+        backgroundColor: habit.color || '#667eea',
+        borderColor: habit.color || '#667eea',
         borderWidth: 2,
         borderRadius: 4
     }));
